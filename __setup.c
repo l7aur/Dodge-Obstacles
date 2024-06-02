@@ -75,6 +75,7 @@ void start()
 
 void end()
 {
+    printf("CLEARING GAME DATA\n");
     DIR * directory;
     struct dirent * directory_entry;
     if((directory = opendir("./")) < 0) {
@@ -92,6 +93,7 @@ void end()
         snprintf(name, 300, "./%s", directory_entry->d_name);
         remove(name);
     }
+    printf("END\n");
 }
 
 void * movement(void * arg) {
