@@ -22,13 +22,9 @@
 
 int current_player_position_number = PLAYER_POSITION_NUMBER;
 
-void initialize();
-void clear();
-void *refresh_display(void *arg)
-{
-    // while(1) {}
-    return NULL;
-}
+void start();
+void end();
+void * movement(void *arg);
 
 void * create_obstacle( void * arg) {
     for(int i = 0; i < 5; i++) {
@@ -44,8 +40,61 @@ void * create_obstacle( void * arg) {
     return NULL;
 }
 
-void *movement(void *arg)
+int main(int argc, char **argv)
 {
+    start();
+
+    end();
+    return 0;
+}
+
+void start()
+{
+    char name[100];
+    for (int i = 1; i <= PLAYER_POSITION_NUMBER - 1; i++)
+    {
+        snprintf(name, 100, "%d%s.txt", i, BLOCK_NAME);
+        creat(name, 0644);
+    }
+    snprintf(name, 100, "%d%s.txt", PLAYER_POSITION_NUMBER, PLAYER_NAME);
+    creat(name, 0644);
+    for (int i = PLAYER_POSITION_NUMBER + 1; i <= NUMBER_OF_BLOCKS; i++)
+    {
+        snprintf(name, 100, "%d%s.txt", i, BLOCK_NAME);
+        creat(name, 0644);
+    }
+
+    pthread_t obstacle_thread;
+    pthread_create(&obstacle_thread, NULL, create_obstacle, NULL);
+
+    pthread_t movement_thread;
+    pthread_create(&movement_thread, NULL, movement, &obstacle_thread);
+
+    pthread_join(movement_thread, NULL);
+}
+
+void end()
+{
+    DIR * directory;
+    struct dirent * directory_entry;
+    if((directory = opendir("./")) < 0) {
+        printf("Cannot see directory!\n");
+        exit(-1);
+    }
+    while((directory_entry = readdir(directory)) != 0) {
+        if( !strcmp(directory_entry->d_name, ".") ||
+            !strcmp(directory_entry->d_name, ".."))
+            continue;
+        if( !strcmp(directory_entry->d_name, C_FILE_NAME) ||
+            !strcmp(directory_entry->d_name, O_FILE_NAME))
+            continue;
+        char name[300];
+        snprintf(name, 300, "./%s", directory_entry->d_name);
+        remove(name);
+    }
+}
+
+void * movement(void * arg) {
     pthread_t obstacle_handling_thread = *(pthread_t *) arg;
     struct termios info;
     tcgetattr(0, &info);          /* get current terminal attirbutes; 0 is the file descriptor for stdin */
@@ -62,9 +111,7 @@ void *movement(void *arg)
         if (ch < 0)
         {
             if (ferror(stdin))
-            {
                 printf("error\n");
-            }
             clearerr(stdin);
         }
         else if (ch == 'w')
@@ -121,61 +168,4 @@ void *movement(void *arg)
     tcsetattr(0, TCSANOW, &info);
     pthread_cancel(obstacle_handling_thread);
     return NULL;
-}
-
-int main(int argc, char **argv)
-{
-    initialize();
-
-    clear();
-    return 0;
-}
-
-void initialize()
-{
-    char name[100];
-    for (int i = 1; i <= PLAYER_POSITION_NUMBER - 1; i++)
-    {
-        snprintf(name, 100, "%d%s.txt", i, BLOCK_NAME);
-        creat(name, 0644);
-    }
-    snprintf(name, 100, "%d%s.txt", PLAYER_POSITION_NUMBER, PLAYER_NAME);
-    creat(name, 0644);
-    for (int i = PLAYER_POSITION_NUMBER + 1; i <= NUMBER_OF_BLOCKS; i++)
-    {
-        snprintf(name, 100, "%d%s.txt", i, BLOCK_NAME);
-        creat(name, 0644);
-    }
-
-    pthread_t refresh_thread;
-    pthread_create(&refresh_thread, NULL, refresh_display, NULL);
-
-    pthread_t obstacle_thread;
-    pthread_create(&obstacle_thread, NULL, create_obstacle, NULL);
-
-    pthread_t movement_thread;
-    pthread_create(&movement_thread, NULL, movement, &obstacle_thread);
-
-    pthread_join(movement_thread, NULL);
-}
-
-void clear()
-{
-    DIR * directory;
-    struct dirent * directory_entry;
-    if((directory = opendir("./")) < 0) {
-        printf("Cannot see directory!\n");
-        exit(-1);
-    }
-    while((directory_entry = readdir(directory)) != 0) {
-        if( !strcmp(directory_entry->d_name, ".") ||
-            !strcmp(directory_entry->d_name, ".."))
-            continue;
-        if( !strcmp(directory_entry->d_name, C_FILE_NAME) ||
-            !strcmp(directory_entry->d_name, O_FILE_NAME))
-            continue;
-        char name[100];
-        snprintf(name, 100, "./%s", directory_entry->d_name);
-        remove(name);
-    }
 }
