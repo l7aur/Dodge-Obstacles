@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
-#include "file.h"
+#include "header.h"
 
 #define NUMBER_OF_BLOCKS 105
 #define NUMBER_OF_LINES 7
@@ -20,8 +20,9 @@
 #define OBSTACLE_NAME "obstacle"
 #define C_FILE_NAME "__setup.c"
 #define O_FILE_NAME "__setup"
-#define H_FILE_NAME "file.h"
-
+#define H_FILE_NAME "header.h"
+#define CH_FILE_NAME "implements.c"
+//todo update what files not to delete with an char * array, not macros
 
 int current_player_position_number = PLAYER_POSITION_NUMBER;
 
@@ -104,7 +105,8 @@ void end()
             continue;
         if( !strcmp(directory_entry->d_name, C_FILE_NAME) ||
             !strcmp(directory_entry->d_name, O_FILE_NAME) ||
-            !strcmp(directory_entry->d_name, H_FILE_NAME))
+            !strcmp(directory_entry->d_name, H_FILE_NAME) ||
+            !strcmp(directory_entry->d_name, CH_FILE_NAME))
             continue;
         char name[300];
         snprintf(name, 300, "./%s", directory_entry->d_name);
