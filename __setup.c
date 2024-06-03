@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
+#include "file.h"
 
 #define NUMBER_OF_BLOCKS 105
 #define NUMBER_OF_LINES 7
@@ -19,6 +20,8 @@
 #define OBSTACLE_NAME "obstacle"
 #define C_FILE_NAME "__setup.c"
 #define O_FILE_NAME "__setup"
+#define H_FILE_NAME "file.h"
+
 
 int current_player_position_number = PLAYER_POSITION_NUMBER;
 
@@ -42,9 +45,22 @@ void * create_obstacle( void * arg) {
 
 int main(int argc, char **argv)
 {
-    start();
+    struct bmp_file_format * data = create_BMP(BLANK);
+    int fd = open("img.bmp", O_CREAT | O_RDWR, 0644);
+    //ftruncate(fd, sizeof(data));
+    lseek(fd, 0, SEEK_SET);
+    write(fd, data->header, sizeof(data->header));
+    write(fd, data->dib_header, sizeof(data->dib_header));
+    write(fd, data->pixel_data, sizeof(data->pixel_data));
+    close(fd);
 
-    end();
+    free(data->dib_header);
+    free(data->header);
+    free(data->pixel_data);
+
+    //start();
+
+    //end();
     return 0;
 }
 
@@ -87,7 +103,8 @@ void end()
             !strcmp(directory_entry->d_name, ".."))
             continue;
         if( !strcmp(directory_entry->d_name, C_FILE_NAME) ||
-            !strcmp(directory_entry->d_name, O_FILE_NAME))
+            !strcmp(directory_entry->d_name, O_FILE_NAME) ||
+            !strcmp(directory_entry->d_name, H_FILE_NAME))
             continue;
         char name[300];
         snprintf(name, 300, "./%s", directory_entry->d_name);
