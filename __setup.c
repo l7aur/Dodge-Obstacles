@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <fcntl.h>
-#include <string.h>
 #include <pthread.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -8,23 +7,7 @@
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
-#include "header.h"
-
-#define NUMBER_OF_BLOCKS 105
-#define NUMBER_OF_LINES 7
-#define NUMBER_OF_COLUMNS 15
-#define PLAYER_POSITION_NUMBER 46
-#define BLOCK_NAME "block"
-#define OBSTACLE_NAME "obstacle"
-#define PLAYER_NAME "player"
-#define OBSTACLE_NAME "obstacle"
-#define C_FILE_NAME "__setup.c"
-#define O_FILE_NAME "__setup"
-#define H_FILE_NAME "header.h"
-#define CH_FILE_NAME "implements.c"
-//todo update what files not to delete with an char * array, not macros
-
-int current_player_position_number = PLAYER_POSITION_NUMBER;
+#include "util.h"
 
 void start();
 void end();
@@ -46,22 +29,9 @@ void * create_obstacle( void * arg) {
 
 int main(int argc, char **argv)
 {
-    struct bmp_file_format * data = create_BMP(BLANK);
-    int fd = open("img.bmp", O_CREAT | O_RDWR, 0644);
-    //ftruncate(fd, sizeof(data));
-    lseek(fd, 0, SEEK_SET);
-    write(fd, data->header, sizeof(data->header));
-    write(fd, data->dib_header, sizeof(data->dib_header));
-    write(fd, data->pixel_data, sizeof(data->pixel_data));
-    close(fd);
+    start();
 
-    free(data->dib_header);
-    free(data->header);
-    free(data->pixel_data);
-
-    //start();
-
-    //end();
+    end();
     return 0;
 }
 
@@ -70,8 +40,17 @@ void start()
     char name[100];
     for (int i = 1; i <= PLAYER_POSITION_NUMBER - 1; i++)
     {
-        snprintf(name, 100, "%d%s.txt", i, BLOCK_NAME);
-        creat(name, 0644);
+        struct bmp_file_format * data = create_BMP(BLANK);
+        snprintf(name, 100, "%d%s.bmp", i, BLOCK_NAME);
+        int fd = open(name, O_CREAT | O_WRONLY, 0644);
+        write(fd, data->header, BMP_HEADER_SIZE);
+        write(fd, data->dib_header, BMP_DIB_HEADER_SIZE);
+        write(fd, data->pixel_data, BMP_PIXEL_DATA);
+        close(fd);
+        free(data->dib_header);
+        free(data->header);
+        free(data->pixel_data);
+        free(data);
     }
     snprintf(name, 100, "%d%s.txt", PLAYER_POSITION_NUMBER, PLAYER_NAME);
     creat(name, 0644);
