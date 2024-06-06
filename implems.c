@@ -1,5 +1,6 @@
 #include <stddef.h> // Include this to define NULL
 #include <string.h>
+#include <stdlib.h>
 #include "header.h"
 
 struct bmp_file_format * BMP_FILE_FORMAT_CREATE() {

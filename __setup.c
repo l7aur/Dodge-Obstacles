@@ -99,19 +99,14 @@ void end()
         printf("Cannot see directory!\n");
         exit(-1);
     }
-    while((directory_entry = readdir(directory)) != 0) {
-        if( !strcmp(directory_entry->d_name, ".") ||
-            !strcmp(directory_entry->d_name, ".."))
-            continue;
-        if( !strcmp(directory_entry->d_name, C_FILE_NAME) ||
-            !strcmp(directory_entry->d_name, O_FILE_NAME) ||
-            !strcmp(directory_entry->d_name, H_FILE_NAME) ||
-            !strcmp(directory_entry->d_name, CH_FILE_NAME))
-            continue;
-        char name[300];
-        snprintf(name, 300, "./%s", directory_entry->d_name);
-        remove(name);
-    }
+    while((directory_entry = readdir(directory)) != 0)
+        if( strstr(directory_entry->d_name, BLOCK_NAME) ||
+       	    strstr(directory_entry->d_name, PLAYER_NAME) ||
+       	    strstr(directory_entry->d_name, OBSTACLE_NAME)) {
+		char name[300];
+        	snprintf(name, 300, "./%s", directory_entry->d_name);
+        	remove(name);
+	}
     printf("END\n");
 }
 
