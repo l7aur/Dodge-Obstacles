@@ -1,12 +1,3 @@
-#include <stdio.h>
-#include <fcntl.h>
-#include <pthread.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <termios.h>
-#include <unistd.h>
 #include "util.h"
 
 void start();
@@ -38,19 +29,13 @@ int main(int argc, char **argv)
 void start()
 {
     char name[100];
-    for (int i = 1; i <= PLAYER_POSITION_NUMBER && i != PLAYER_POSITION_NUMBER; i++)
+    for (int i = 1; i <= NUMBER_OF_BLOCKS; i++)
     {
-        struct bmp_file_format * data = create_BMP(BLANK);
+        if(i == PLAYER_POSITION_NUMBER)
+            continue;
         snprintf(name, 100, "%d%s.bmp", i, BLOCK_NAME);
-        int fd = open(name, O_CREAT | O_WRONLY, 0644);
-        write(fd, data->header, BMP_HEADER_SIZE);
-        write(fd, data->dib_header, BMP_DIB_HEADER_SIZE);
-        write(fd, data->pixel_data, BMP_PIXEL_DATA);
-        close(fd);
-        free(data->dib_header);
-        free(data->header);
-        free(data->pixel_data);
-        free(data);
+        if(create_BMP(name, BLANK) < 0)
+            perror("Cannot create a file!");
     }
     snprintf(name, 100, "%d%s.txt", PLAYER_POSITION_NUMBER, PLAYER_NAME);
     creat(name, 0644);
