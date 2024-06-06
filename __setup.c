@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 void start()
 {
     char name[100];
-    for (int i = 1; i <= PLAYER_POSITION_NUMBER - 1; i++)
+    for (int i = 1; i <= PLAYER_POSITION_NUMBER && i != PLAYER_POSITION_NUMBER; i++)
     {
         struct bmp_file_format * data = create_BMP(BLANK);
         snprintf(name, 100, "%d%s.bmp", i, BLOCK_NAME);
@@ -54,11 +54,6 @@ void start()
     }
     snprintf(name, 100, "%d%s.txt", PLAYER_POSITION_NUMBER, PLAYER_NAME);
     creat(name, 0644);
-    for (int i = PLAYER_POSITION_NUMBER + 1; i <= NUMBER_OF_BLOCKS; i++)
-    {
-        snprintf(name, 100, "%d%s.txt", i, BLOCK_NAME);
-        creat(name, 0644);
-    }
 
     pthread_t obstacle_thread;
     pthread_create(&obstacle_thread, NULL, create_obstacle, NULL);
