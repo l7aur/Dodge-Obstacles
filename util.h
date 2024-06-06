@@ -4,7 +4,16 @@
 #include <stddef.h> // Include this to define NULL
 #include <string.h>
 #include <sys/types.h>
-
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <dirent.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <termios.h>
+#include <unistd.h>
 
 /**======================================================
  * GLOBAL CONSTANTS
@@ -47,7 +56,9 @@ extern int current_player_position_number;
  * FUNCTION DECLARATIONS
  * ======================================================
 */
-struct bmp_file_format * BMP_FILE_FORMAT_CREATE();
-struct bmp_file_format * create_BMP(enum BMP_TYPE type);
+// struct bmp_file_format * BMP_FILE_FORMAT_CREATE();
+// struct bmp_file_format * create_BMP(enum BMP_TYPE type);
+
+int create_BMP(char * file_name, enum BMP_TYPE type);
 
 #endif /* UTIL_H */
