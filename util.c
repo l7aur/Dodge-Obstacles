@@ -1,6 +1,3 @@
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include "util.h"
 
 /**======================================================
@@ -59,15 +56,34 @@ struct bmp_file_format * create_obstacle_BMP() {
     return NULL;
 }
 
-struct bmp_file_format * create_BMP(enum BMP_TYPE type) {
+int create_BMP(char * file_name, enum BMP_TYPE type) {
+    struct bmp_file_format * data = NULL;
     switch (type)
     {
     case BLANK:
-        return create_blank_BMP();
+        data = create_blank_BMP();
+        break;
     case PLAYER:
-        return create_player_BMP();
+        data = create_player_BMP();
+        break;
     case OBSTACLE:
-        return create_obstacle_BMP();
+        data = create_obstacle_BMP();
+        break;
+    default:
+        return -1;
     }
-    return NULL;
+
+    if(data == NULL)
+        return -1;
+        
+    int fd = open(file_name, O_CREAT | O_WRONLY, 0644);
+    write(fd, data->header, BMP_HEADER_SIZE);
+    write(fd, data->dib_header, BMP_DIB_HEADER_SIZE);
+    write(fd, data->pixel_data, BMP_PIXEL_DATA);
+    close(fd);
+    free(data->dib_header);
+    free(data->header);
+    free(data->pixel_data);
+    free(data);
+    return 0;
 }
