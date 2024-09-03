@@ -1,4 +1,27 @@
-# Dodge-Obstacles
+# Snow Boarder
+
+## Table of contents
+
+- [Preview](#preview)
+- [Description](#description)
+- [Player Controls](#player-controls)
+- [How To Play](#how-to-play)
+- [Resources](#resources)
+- [Further-Developments](#further-developments)
+
+### Preview
+
+*video*
+
+### Description
+
+### Player Controls
+
+### How To Play
+
+### Resources
+
+### Further Developments
 
 - 2d game.
 - Resize the window so that 15 files can be displayed on a row and 7 rows are visible.
