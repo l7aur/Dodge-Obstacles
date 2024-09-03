@@ -21,7 +21,7 @@
 - 104 are blank files (*block.bmp* - white image)
 - 1 file (*player.bmp* - green file) - the file that the player can control
 
-*Note* At random times, *obstacle.bmp* (black iamges) files are created in the rightmost column and travel to the left. When they reach the first column such files are destroyed and replaced by *block.bmp* files.
+*Note:* At random times, *obstacle.bmp* (black iamges) files are created in the rightmost column and travel to the left. When they reach the first column such files are destroyed and replaced by *block.bmp* files.
 
 ### Player Controls
 
